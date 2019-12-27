@@ -1,46 +1,37 @@
 # ------------------------------------------------------------------------
-# This is the main 'driver' code for the whole program.  It first scrapes
-# the web for the most recently read book.  It scrapes again.  If the two
-# results differ, then a new book was read.  Kathryn's phone number is
-# retrieved and a congratulatory text message is sent.  Lastly, the
-# 'last_book' is updated to prevent repeated messages, and the program sleeps
-# for 20 seconds.
+# This script contains methods responsible for sending texts out.
 #
 # author: Ryan Hood
 # email: ryanchristopherhood@gmail.com
 # ------------------------------------------------------------------------
 
-
 import phone_number
 import boto3
-import scraping
-import time
+import generate_message
+import count_methods
 
-MESSAGE = 'Congratulations On Reading Another Book.  Keep It Going!'
 
-# --------------------------------------------
-# ------------------MAIN----------------------
-# --------------------------------------------
+def new_book_text():
+    # Get the Phone Number.
+    phone_number = phone_number.KATHRYN_PHONE_NUMBER
 
-# Get the most recent book read before infinite loop is entered.
-current_last_book = scraping.get_most_recent_book()
-while True:
-    print("Checking goodreads for a new book")
+    # Get the message.
+    message = generate_message.generate_full_message()
 
-    # Get the most recent book read.  On first iteration, it will be identical
-    # to 'last_book'.
-    new_last_book = scraping.get_most_recent_book()
+    # Send the text.
+    client = boto3.client('sns')
+    client.publish(PhoneNumber=phone_number, Message=message)
 
-    if (current_last_book != new_last_book):
-        # If not the same, a new book was read.  Get the phone number...
-        phone_number = phone_number.KATHRYN_PHONE_NUMBER
+def new_years_text():
+    # If this method gets called, then it must already have been determined that it's the New Year.
+    # So do not check again.
 
-        # ... and send the text message.
-        client = boto3.client('sns')
-        client.publish(PhoneNumber=phone_number, Message=MESSAGE)
+    # Get the Phone Number.
+    phone_number = phone_number.KATHRYN_PHONE_NUMBER
 
-        # Update the 'current_last_book' to avoid repeated messages.
-        current_last_book = new_last_book
+    # Generate the message.
+    message = "Happy New Years!  This Year, You Have Read " + str(count_methods.get_count()) + " Books.  Now The Counter Will Be Reset.  Good Luck This Year!"
 
-    # Sleep for a set amount of seconds.
-    time.sleep(20)
+    # Send the text.
+    client = boto3.client('sns')
+    client.publish(PhoneNumber=phone_number, Message=message)

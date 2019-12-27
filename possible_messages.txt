@@ -1,0 +1,7 @@
+'Congratulations On Reading Another Book!'
+"You're Doing Great So Far!"
+'Keep It Going!'
+MESSAGE_FOUR = "There's Not Enough Books In The World For You!"
+MESSAGE_FIVE = 'Oh Look. Kathryn Read Another Book!'
+MESSAGE_SIX = "You're A BookWorm!"
+NUM_MESSAGES = 6
