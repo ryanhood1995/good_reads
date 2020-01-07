@@ -51,6 +51,5 @@ while True:
         count_methods.restart_count()
 
 
-
     # Sleep for a set amount of seconds.
     time.sleep(20)
